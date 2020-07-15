@@ -1,0 +1,5 @@
+*/data/sequences.fasta
+*/data/*.tsv
+*/data/output/*
+*/data/*intermediate_output/
+*/data/cleaned.fasta
