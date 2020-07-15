@@ -1,3 +1,6 @@
+
+# Data sourcing
+
 dates of restrictions via:
 https://www.who.int/bulletin/online_first/BLT.20.255679.pdf
 https://en.wikipedia.org/wiki/COVID-19_pandemic_lockdowns
