@@ -17,7 +17,7 @@ The sequence and codon numbering are relative to the coordinate space of `hCoV-1
 These scripts are intended to analyze the Nextstrain-curated data from [GISAID](https://www.gisaid.org/), which requires registration to download data. GISAID prohibits redistribution, so this repository cannot include input data. 
 
 To obtain the input data, follow these steps:
- 1. Log into GISAID’s EpiCoV site
+ 1. Log into GISAID’s [EpiCoV site](https://www.epicov.org/epi3/frontend)
  2. Click “Downloads” to bring up a modal window
  3. In this window click on “nextmeta” to download the file `metadata.tsv.bz2`. This should be decompressed and saved as `data/metadata.tsv`.
  4. From the same modal window, click on “nextfasta” to download the file `sequences.fasta.bz2`. This should be decompressed and saved as `data/sequences.fasta`.
@@ -27,4 +27,4 @@ The sequences were prepared via:
 ```../scripts/align_and_clean.sh data/sequences.fasta data/blank.fasta data/NC_045512.2.fasta data/cleaned.fasta```
 
 # Gather frequencies and plot
-`analyze_freq_and_plot.py`
+`./analyze_freq_and_plot.py`
