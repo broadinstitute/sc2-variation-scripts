@@ -64,6 +64,8 @@ def read_seq_sub_freqs(fasta_in, gene_range, aa_sub, regions, sample_metadata, o
     aa_sub_re = re.compile(r"^(?P<anc>[ARNDCQEGHILKMFPSTWYV])?(?P<aa_pos>\d+)(?P<aa_sub>[ARNDCQEGHILKMFPSTWYV])$")
     m = re.match(aa_sub_re, aa_sub)
     assert m.group("aa_pos") and m.group("aa_sub")
+    aa_expected = m.group("aa_sub")
+    aa_expected_pos = int(m.group("aa_pos"))
 
     out_filepath = out_filepath or "data/output"
     matching_fasta = out_filepath+"/"+aa_sub+"_matching_seqs.fasta"
@@ -89,16 +91,16 @@ def read_seq_sub_freqs(fasta_in, gene_range, aa_sub, regions, sample_metadata, o
                 if (exclude_older_than is not None and sample_date < datetime.datetime.strptime(exclude_older_than, "%Y-%m-%d")) or (sample_date > datetime.datetime.now()):
                     continue
 
+                gene_seq=record.seq[gene_start-1:gene_end]#.ungap("-")
+
                 denominator_regions_by_date[sample_date][sample_region]+=1
 
-                gene_seq=record.seq[gene_start-1:gene_end].ungap("-")
-                protein_seq=gene_seq.translate()
-                aa=protein_seq[int(m.group("aa_pos"))-1]
-
                 # to examine degeneracy
-                codon=gene_seq[((int(m.group("aa_pos"))-1)*3):((int(m.group("aa_pos"))-1)*3+3)]
+                codon=gene_seq[((aa_expected_pos-1)*3):((aa_expected_pos-1)*3+3)]
+                aa_seen=""
+                aa_seen = codon.translate()
 
-                if aa == m.group("aa_sub"):
+                if aa_seen == aa_expected:
                     numerator_per_date[sample_date]+=1
 
                     record.id=copy.deepcopy(record.description)+"|"+sample_date.strftime('%Y-%m-%d')
@@ -371,9 +373,10 @@ def plot_from_tsv(tsv_in, avg_period=1, pdf_out="freq.pdf", tsv_avg_out=None, yl
 
 if __name__ == "__main__":
     # =============================
-    # D614G
+    # Spike D614G
     gene_range=(21563,25384)
     aa_sub="D614G"
+    #aa_sub="Y453F"
 
     # ORF1b P314L
     #gene_range=(13468,21555)
@@ -382,6 +385,11 @@ if __name__ == "__main__":
     # ORF1a L3606F
     #gene_range=(266,13468)
     #aa_sub="L3606F"
+
+    # N gene A222V
+    # see: https://www.medrxiv.org/content/10.1101/2020.10.25.20219063v1.full.pdf
+    #gene_range=(28274,29533)
+    #aa_sub="A220V"
     # =============================
 
     msa_fasta_pattern = "data/*_intermediate_output/msa.ends-masked.sites-masked.fasta"
@@ -391,6 +399,8 @@ if __name__ == "__main__":
         input_msa = msa_fastas[0] # sys.argv[1]
     else:
         raise FileNotFoundError("%s not found as one distinct file" % msa_fasta_pattern)
+
+
 
     gisaid_metadata_pattern = "data/metadata*.tsv"
     metadata_tsvs = glob.glob(gisaid_metadata_pattern)
