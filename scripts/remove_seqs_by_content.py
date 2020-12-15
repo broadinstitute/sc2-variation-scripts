@@ -7,10 +7,7 @@ from Bio.Seq import Seq
 from Bio.SeqIO import FastaIO
 
 parser = argparse.ArgumentParser(
-            description="""This cleans sequences dumped from GISAID
-                            It replaces spaces in sequence ids/descriptions with underscores and makes all sequences upper-case.
-                            It additionally provides options to include/exclude sequences by pattern in the id/description,
-                            and by inclusion in a date range."""
+            description="""This cleans seqs to remove ones with high gap or ambig fractions."""
             )
 
 parser.add_argument('fasta_in', type=argparse.FileType('r'), help='Input fasta.')
